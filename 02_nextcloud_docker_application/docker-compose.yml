@@ -23,9 +23,9 @@ services:
        - MYSQL_DATABASE=nextclouddb
        - MYSQL_USER=mariadb
        - MYSQL_INITDB_SKIP_TZINFO=1
-  
+
+  # The dynamic web applicatio  
   web:
-  # The dynamic web application
     image: nextcloud
     container_name: 'nc-traefiklands-rocks'
     restart: always
