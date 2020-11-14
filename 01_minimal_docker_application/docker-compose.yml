@@ -1,10 +1,22 @@
 version: '3'
 
+# We don't leave anything to chance (radom names):
+# - define container name
+# - define network bridge adapter
+
+# Container with a static webside
 services:
   web:
     build: .
     container_name: 'nginx-traefiklands-rocks'
     ports:
       - 80:80
+    networks:
+      - nginx-net
 
-  
+# We route through self definded bridge adpater
+networks:
+  nginx-net:
+    name: nginx-net
+    driver: bridge
+

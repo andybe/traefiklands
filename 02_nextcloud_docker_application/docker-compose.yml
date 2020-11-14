@@ -1,0 +1,65 @@
+version: '3'
+
+# We don't leave anything to chance (radom names):
+# - define container names
+# - define volumes by namy
+# - define network bridge adapter
+
+# Container with a real  web application
+
+services:
+  # The database container
+  database:
+    image: mariadb
+    container_name: nextcloud-database
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro # link localtime into conainer
+      - nextcloud-database:/var/lib/mysql
+    environment:
+       - MYSQL_ROOT_PASSWORD=mariadb
+       - MYSQL_PASSWORD=mariadb
+       - MYSQL_DATABASE=nextclouddb
+       - MYSQL_USER=mariadb
+       - MYSQL_INITDB_SKIP_TZINFO=1
+  
+  web:
+  # The dynamic web application
+    image: nextcloud
+    container_name: 'nc-traefiklands-rocks'
+    restart: always
+    ports:
+      - 80:80
+    links:          # we link automatic 
+      - database:db # to database network
+      # creates network:  02_nextcloud_docker_application_default
+    volumes:
+      - /etc/localtime:/etc/localtime:ro # link localtime into conainer
+      - nextcloud-app:/var/www/html
+      - nextcloud-data:/var/www/html/data
+    environment:
+       - MYSQL_PASSWORD=mariadb
+       - MYSQL_DATABASE=nextclouddb
+       - MYSQL_USER=mariadb
+       - NEXTCLOUD_ADMIN_USER=traefik
+       - NEXTCLOUD_ADMIN_PASSWORD=rocks
+    networks: 
+      - nextcloud
+    depends_on:
+      - database
+
+# named volumes
+volumes:
+  nextcloud-database:
+    name: nextcloud-database
+  nextcloud-app:
+    name: nextcloud-app
+  nextcloud-data:
+    name: nextcloud-data
+
+# We route through self definded bridge adpater
+networks:
+  nextcloud:
+    name: nextcloud
+    driver: bridge
