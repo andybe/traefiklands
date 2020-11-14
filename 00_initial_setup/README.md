@@ -10,7 +10,7 @@ In case we destroy the traefik container the network
 should still exist.
 
 ```
-
+![DNS A Entries](https://raw.githubusercontent.com/andybe/traefiklands/main/00_initial_setup/screenshots/network_entries.png)
 ```
 All sub-/domains are definded with an A record
 for letsencrypt. In case of better protection remove the
