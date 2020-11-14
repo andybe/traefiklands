@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: 'nginx-traefiklands-rocks'
+    ports:
+      - 80:80
+
+  
