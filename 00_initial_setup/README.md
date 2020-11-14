@@ -1,0 +1,1 @@
+Install docker from docker.io with the community edition
