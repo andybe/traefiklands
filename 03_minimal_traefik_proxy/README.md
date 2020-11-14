@@ -1,9 +1,9 @@
 This is the absolute minimum for traefik.
 
-No application yet routed, but we can enjoy the dashboard at port 8080.
+No application yet routed, but we can enjoy the dashboard directly.
 
 for example
 
-http://traefiklands.rocks:8080
+http://traefiklands.rocks
 
 ... and we are ready to rock with a little bit more configuration.

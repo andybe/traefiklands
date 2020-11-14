@@ -3,7 +3,7 @@ Install docker from docker.io with the community edition
 We specify a bridged adapter for later:
 
 ```
-docker network create traefik
+docker network create proxy
 ```
 
 In case we destroy the traefik container the network
