@@ -9,9 +9,9 @@ docker network create traefik
 In case we destroy the traefik container the network
 should still exist.
 
-```
-![Network Entries](network_entries.png)
-```
+
+![Network Entries](https://github.com/andybe/traefiklands/blob/main/00_initial_setup/screenshots/network_entries.png)
+
 All sub-/domains are definded with an A record
 for letsencrypt. In case of better protection remove the
 wildcard entry (*).
