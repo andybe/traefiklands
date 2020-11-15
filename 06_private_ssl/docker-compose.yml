@@ -13,7 +13,7 @@ services:
        # here we name the routing hostname
        - "traefik.http.routers.traefik.rule=Host(`dashboard.traefiklands.rocks`)"
        # take a view at the last line of "command"
-       - "traefik.http.routers.traefik.entrypoints=http"
+       - "traefik.http.routers.traefik.entrypoints=https"
        # this route the dashboard internal from 8080 to http (80)
        - "traefik.http.routers.traefik.service=api@internal"
     ports:
@@ -37,11 +37,13 @@ services:
       - "traefik.enable=true"
       # here we define the domain(s)
       - "traefik.http.routers.web.rule=Host(`traefiklands.rocks`) || Host(`www.traefiklands.rocks`)"
-      - "traefik.http.routers.web.middlewares=web-www-http-redirect"
-      - "traefik.http.middlewares.web-www-http-redirect.redirectregex.regex=^http://traefiklands.rocks/(.*)"
-      - "traefik.http.middlewares.web-www-http-redirect.redirectregex.replacement=http://www.traefiklands.rocks/$${1}"
+      - "traefik.http.routers.web.middlewares=web-www-https-redirect"
+      - "traefik.http.middlewares.web-www-http-redirect.redirectregex.regex=^https://traefiklands.rocks/(.*)"
+      - "traefik.http.middlewares.web-www-http-redirect.redirectregex.replacement=https://www.traefiklands.rocks/$${1}"
       # and the entrypoint
       - "traefik.http.routers.web.entrypoints=http"
+      - "traefik.http.routers.web.tls=true"
+      - "traefik.http.routers.web.entrypoints=https"
       - "traefik.http.services.web.loadbalancer.server.port=80"
       # to be save we define the network here
       - "traefik.docker.network=proxy"
@@ -94,8 +96,8 @@ services:
       # here we define the domain(s)
       - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.traefiklands.rocks`)"
       # and the entrypoint
-      - "traefik.http.routers.nextcloud.entrypoints=http"
-      - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
+      - "traefik.http.routers.nextcloud.entrypoints=https"
+      - "traefik.http.services.nextcloud.loadbalancer.server.port=443"
       # to be save we define the network here
       - "traefik.docker.network=proxy"      
 

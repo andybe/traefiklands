@@ -1,23 +1,29 @@
 api:
   dashboard: true
-  entryPoint: "api"
   # we need to be insecure because of port http
   insecure: true
   debug: true
+#  entryPoint: api
 
 entrypoints:
   http:
     address: ":80"
   https:
     address: ":443"
-    entryPoints:
-      https:
-        tls:
-          certificates:
-            certfFile = "/certs/traefik.crt"
-            keyFile = "/etc/traefik.key"
-  api:
-    address: ":8080"
+
+
+tls:
+  stores:
+    defaultCertificates:
+      certfFile: "/certs/traefik.crt"
+      keyFile: "/certs/traefik.key"
+  options:
+    default:
+      minVersion: VersionTLS12
+    mintls13:
+      minVersion: VersionTLS13
+
+
 
 log:
   # only for development - default INFO
@@ -25,7 +31,7 @@ log:
 
 ping:
   # this is default
-  entryPoint: "traefik"
+  entryPoint: traefik
 
 providers:
   # here we define the backend docker
