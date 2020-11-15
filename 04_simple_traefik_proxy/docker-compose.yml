@@ -1,0 +1,63 @@
+# We don't leave anything to chance (radom names):
+# - define container name
+# - define network bridge adapter
+
+version: '3'
+
+services:
+  traefik:
+    image: traefik:v2.3.2
+    container_name: traefik
+    command:
+      - "--api=true"
+      - "--api.dashboard=true"
+      # we need to be insecure because of port http
+      - "--api.insecure=true"
+      # this is default
+      - "--ping.entryPoint=traefik"
+      # only for development - default INFO
+      - "--log.level=DEBUG" 
+      # here we define the backend docker
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=proxy"
+       # this is default
+      - "--providers.docker.defaultrule=Host(`{{ normalize .Name }}`)"
+      # for router entrypoints take the path '... http ...' who define a port
+      - "--entrypoints.http.address=:80"
+    labels:
+       - "traefik.enable=true"
+       # here we name the routing hostname
+       - "traefik.http.routers.traefik.rule=Host(`dashboard.traefiklands.rocks`)"
+       # take a view at the last line of "command"
+       - "traefik.http.routers.traefik.entrypoints=http"
+       # this route the dashboard internal from 8080 to http (80)
+       - "traefik.http.routers.traefik.service=api@internal"
+    ports:
+      # with the default port http
+      - 80:80
+    volumes:
+      # while we allready enabled docker as backend,
+      # the socket must be exported to the container
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy
+
+  web:
+    build: .
+    container_name: 'nginx-traefiklands-rocks'
+    labels:
+      - "traefik.enable=true"
+      # here we define the domain
+      - "traefik.http.routers.web.rule=Host(`traefiklands.rocks`)"
+      # and the entrypoint
+      - "traefik.http.routers.web.entrypoints=http"
+      - "traefik.http.services.web.loadbalancer.server.port=80"
+      # to be save we define the network here
+      - "traefik.docker.network=proxy"
+    networks:
+      - proxy
+# We route through the defined bridge (00_initial_setup)
+networks:
+  proxy:
+    external: true
