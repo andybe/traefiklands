@@ -1,0 +1,24 @@
+api:
+  dashboard: true
+  # we need to be insecure because of port http
+  insecure: true
+  debug: true
+
+entrypoints:
+  http:
+    address: ":80"
+
+log:
+  # only for development - default INFO
+  level: DEBUG
+
+ping:
+  # this is default
+  entryPoint: traefik
+
+providers:
+  # here we define the backend docker
+  docker: 
+    endpoint: "unix:///var/run/docker.sock"
+    exposedbydefault: false
+    network: proxy
