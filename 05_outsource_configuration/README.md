@@ -7,7 +7,7 @@ The traefik bashboard still stays under:
 
 Static web application provides:
 
- - regex to forward from http:// => http://www
+ - regex defination forward http:// to http://www
 
 Dynamic webapplication (nextcloud):
 
