@@ -2,7 +2,7 @@ version: '3'
 
 # We don't leave anything to chance (radom names):
 # - define container names
-# - define volumes by namy
+# - define volumes by name
 # - define network bridge adapter
 
 # Container with a real  web application
@@ -34,6 +34,7 @@ services:
     links:          # we link automatic 
       - database:db # to database network
       # creates network:  02_nextcloud_docker_application_default
+      #                   (upper directory + default)
     volumes:
       - /etc/localtime:/etc/localtime:ro # link localtime into conainer
       - nextcloud-app:/var/www/html

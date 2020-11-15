@@ -1,6 +1,6 @@
 # We don't leave anything to chance (radom names):
 # - define container name
-# - define network bridge adapter
+# - take the  network bridge adapter from setup
 
 version: '3'
 
@@ -23,11 +23,11 @@ services:
       - "--providers.docker.network=proxy"
        # this is default
       - "--providers.docker.defaultrule=Host(`{{ normalize .Name }}`)"
-      # for router entrypoints take the path '... http ...' who define a port
+      # for router entrypoints take the path '... http ...' which defines a port
       - "--entrypoints.http.address=:80"
     labels:
        - "traefik.enable=true"
-       # here we name the routing hostname
+       # here we name the routing fqn hostname
        - "traefik.http.routers.traefik.rule=Host(`traefiklands.rocks`)"
        # take a view at the last line of "command"
        - "traefik.http.routers.traefik.entrypoints=http"
