@@ -15,4 +15,7 @@ This are step by step examples for https://doc.traefik.io/ done under debian bus
 <a href="https://github.com/andybe/traefiklands/tree/main/04_simple_traefik_proxy">04 Simple traefik proxy (static web page) - one docker-composer</a>
 <br>
 <br>
+<a href="https://github.com/andybe/traefiklands/tree/main/05_outsource_configuration">05 Outsource most traefik configuration (www rewrite + nextcloud)</a>
+<br>
+<br>
 Have fun ...
