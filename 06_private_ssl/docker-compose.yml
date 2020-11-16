@@ -23,7 +23,8 @@ services:
     volumes:
       # configuration that will be read from traefik at this point
       - ./proxy/traefik.yml:/traefik.yml:ro
-      - ./proxy/certs/:/certs/
+      - ./proxy/certs-traefik.yml:/etc/traefik/dynamic/certs-traefik.yaml
+      - ./proxy/certs/:/etc/certs/
       # while we allready enabled docker as backend,
       # the socket must be exported to the container
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -38,77 +39,76 @@ services:
       # here we define the domain(s)
       - "traefik.http.routers.web.rule=Host(`traefiklands.rocks`) || Host(`www.traefiklands.rocks`)"
       - "traefik.http.routers.web.middlewares=web-www-https-redirect"
-      - "traefik.http.middlewares.web-www-http-redirect.redirectregex.regex=^https://traefiklands.rocks/(.*)"
-      - "traefik.http.middlewares.web-www-http-redirect.redirectregex.replacement=https://www.traefiklands.rocks/$${1}"
+      - "traefik.http.middlewares.web-www-https-redirect.redirectregex.regex=^https://traefiklands.rocks/(.*)"
+      - "traefik.http.middlewares.web-www-https-redirect.redirectregex.replacement=https://www.traefiklands.rocks/$${1}"
       # and the entrypoint
-      - "traefik.http.routers.web.entrypoints=http"
       - "traefik.http.routers.web.tls=true"
       - "traefik.http.routers.web.entrypoints=https"
-      - "traefik.http.services.web.loadbalancer.server.port=80"
+      - "traefik.http.services.web.loadbalancer.server.port=8080"
       # to be save we define the network here
       - "traefik.docker.network=proxy"
     networks:
       - proxy
 
-  # The database container
-  database:
-    image: mariadb
-    container_name: nextcloud-database
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    restart: always
-    volumes:
-      - /etc/localtime:/etc/localtime:ro # link localtime into conainer
-      - /etc/timezone:/etc/timezone:ro #zone information
-      - nextcloud-database:/var/lib/mysql
-    environment:
-       - MYSQL_ROOT_PASSWORD=mariadb
-       - MYSQL_PASSWORD=mariadb
-       - MYSQL_DATABASE=nextclouddb
-       - MYSQL_USER=mariadb
-       - MYSQL_INITDB_SKIP_TZINFO=1
+#  # The database container
+#  database:
+#    image: mariadb
+#    container_name: nextcloud-database
+#    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+#    restart: always
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro # link localtime into conainer
+#      - /etc/timezone:/etc/timezone:ro #zone information
+#      - nextcloud-database:/var/lib/mysql
+#    environment:
+#       - MYSQL_ROOT_PASSWORD=mariadb
+#       - MYSQL_PASSWORD=mariadb
+#       - MYSQL_DATABASE=nextclouddb
+#       - MYSQL_USER=mariadb
+#       - MYSQL_INITDB_SKIP_TZINFO=1
 
   # The dynamic web applicatio  
-  nextcloud:
-    image: nextcloud
-    container_name: 'nc-traefiklands-rocks'
-    restart: always
-    links:          # we link automatic 
-      - database:db # to database network
+#  nextcloud:
+#    image: nextcloud
+#    container_name: 'nc-traefiklands-rocks'
+#    restart: always
+#    links:          # we link automatic 
+ #     - database:db # to database network
       # creates network:  02_nextcloud_docker_application_default
       #                   (upper directory + default)
-    volumes:
-      - /etc/localtime:/etc/localtime:ro # link localtime into conainer
-      - /etc/timezone:/etc/timezone:ro #zone information
-      - nextcloud-app:/var/www/html
-      - nextcloud-data:/var/www/html/data
-    environment:
-       - MYSQL_PASSWORD=mariadb
-       - MYSQL_DATABASE=nextclouddb
-       - MYSQL_USER=mariadb
-       - NEXTCLOUD_ADMIN_USER=traefik
-       - NEXTCLOUD_ADMIN_PASSWORD=rocks
-    networks: 
-      - proxy
-    depends_on:
-      - database
-    labels:
-      - "traefik.enable=true"
+ #   volumes:
+ #     - /etc/localtime:/etc/localtime:ro # link localtime into conainer
+ #     - /etc/timezone:/etc/timezone:ro #zone information
+ #     - nextcloud-app:/var/www/html
+ #     - nextcloud-data:/var/www/html/data
+ #   environment:
+ #      - MYSQL_PASSWORD=mariadb
+ #      - MYSQL_DATABASE=nextclouddb
+ #      - MYSQL_USER=mariadb
+ #      - NEXTCLOUD_ADMIN_USER=traefik
+ #      - NEXTCLOUD_ADMIN_PASSWORD=rocks
+ #   networks: 
+ #     - proxy
+ #   depends_on:
+ #     - database
+ #   labels:
+ #     - "traefik.enable=true"
       # here we define the domain(s)
-      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.traefiklands.rocks`)"
+ #     - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.traefiklands.rocks`)"
       # and the entrypoint
-      - "traefik.http.routers.nextcloud.entrypoints=https"
-      - "traefik.http.services.nextcloud.loadbalancer.server.port=443"
+ #     - "traefik.http.routers.nextcloud.entrypoints=https"
+ #     - "traefik.http.services.nextcloud.loadbalancer.server.port=443"
       # to be save we define the network here
-      - "traefik.docker.network=proxy"      
+ #     - "traefik.docker.network=proxy"      
 
 # named volumes
-volumes:
-  nextcloud-database:
-    name: nextcloud-database
-  nextcloud-app:
-    name: nextcloud-app
-  nextcloud-data:
-    name: nextcloud-data
+#volumes:
+#  nextcloud-database:
+#    name: nextcloud-database
+#  nextcloud-app:
+#    name: nextcloud-app
+#  nextcloud-data:
+#    name: nextcloud-data
 # We route through the defined bridge (00_initial_setup)
 networks:
   proxy:
