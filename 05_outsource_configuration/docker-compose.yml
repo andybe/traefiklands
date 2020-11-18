@@ -53,7 +53,7 @@ services:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
     volumes:
-      - /etc/localtime:/etc/localtime:ro # link localtime into conainer
+      - /etc/localtime:/etc/localtime:ro # link localtime into container
       - /etc/timezone:/etc/timezone:ro #zone information
       - nextcloud-database:/var/lib/mysql
     environment:
@@ -73,7 +73,7 @@ services:
       # creates network:  02_nextcloud_docker_application_default
       #                   (upper directory + default)
     volumes:
-      - /etc/localtime:/etc/localtime:ro # link localtime into conainer
+      - /etc/localtime:/etc/localtime:ro # link localtime into container
       - /etc/timezone:/etc/timezone:ro #zone information
       - nextcloud-app:/var/www/html
       - nextcloud-data:/var/www/html/data
