@@ -15,22 +15,17 @@ services:
        - "traefik.http.middlewares.auth.basicauth.users=traefik:$$apr1$$pR013MIB$$ltHETm7qRT.uFaWFQ/XlN1
 ```
 
-In this case we need the htpasswd.
+In this case we need the command htpasswd.
 
 ```
 Debian based distributions:
 
    sudo apt-get install apache2-utils
 
-```
-
-```
 Arch-Linux:
 
    sudo pacman -S apache
-```
 
-```
 Centos 7:
 
    yum install httpd-tools
@@ -39,3 +34,4 @@ Centos 8 / Fedora:
 
    dnf install httpd-tools   
 ```
+We can use this technik for every web entry.
