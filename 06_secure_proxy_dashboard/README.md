@@ -1,5 +1,6 @@
 In this example we add fallow lines into docker-compose.yml:
 
+```
 services:
   traefik:
     image: traefik:v2.4
@@ -12,6 +13,7 @@ services:
        - "traefik.http.routers.traefik.middlewares=auth"
        # echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
        - "traefik.http.middlewares.auth.basicauth.users=traefik:$$apr1$$pR013MIB$$ltHETm7qRT.uFaWFQ/XlN1
+```
 
 In this case we need the htpasswd.
 
