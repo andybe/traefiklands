@@ -35,7 +35,7 @@ services:
       # letsencrypt acme storage
       # every vhost name with https will be saved saved in this file
       # traefik has his own format
-      - ./proxy/acme.json:/etc/letsencrypt/acme.json:rw
+      - ./acme/:/etc/letsencrypt/:rw
       # while we allready enabled docker as backend,
       # the socket must be exported to the container
       - /var/run/docker.sock:/var/run/docker.sock:ro
