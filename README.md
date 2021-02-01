@@ -21,4 +21,7 @@ This are step by step examples for https://doc.traefik.io/ done under debian bus
 <a href="https://github.com/andybe/traefiklands/tree/main/06_secure_proxy_dashboard">06 Make the dashboard more secure with basic authentication</a>
 <br>
 <br>
+<a href="https://github.com/andybe/traefiklands/tree/main/07_secure_letsencrypt">07 Configure https certifications with acme (letsencrypt)</a>
+<br>
+<br>
 Have fun ...
