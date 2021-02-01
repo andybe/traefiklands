@@ -1,0 +1,68 @@
+# We don't leave anything to chance (radom names):
+# - define container name
+# - define network bridge adapter
+
+version: '3'
+
+services:
+  traefik:
+    image: traefik:v2.4
+    container_name: traefik
+    labels:
+       - "traefik.enable=true"
+       # here we name the routing hostname
+       - "traefik.http.routers.traefik.rule=Host(`dashboard.traefiklands.rocks`)"
+       # take a view at the last line of "command"
+       - "traefik.http.routers.traefik.entrypoints=http"
+       # this route the dashboard internal from 8080 to http (80)
+       - "traefik.http.routers.traefik.service=api@internal"
+       # set auth for the dashboard
+       - "traefik.http.routers.traefik.middlewares=auth"
+       # echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+       - "traefik.http.middlewares.auth.basicauth.users=traefik:$$apr1$$pR013MIB$$ltHETm7qRT.uFaWFQ/XlN1"
+       # and the entrypoint
+       - "traefik.http.routers.traefik.entrypoints=https"
+       - "traefik.http.routers.traefik.tls=true"
+       - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+
+    ports:
+      # with the default port http
+      - 80:80
+      - 443:443
+    volumes:
+      # configuration that will be read from traefik at this point
+      - ./proxy/traefik.yml://etc/traefik/traefik.yml:ro
+      # letsencrypt acme storage
+      # every vhost name with https will be saved saved in this file
+      # traefik has his own format
+      - ./proxy/acme.json:/etc/letsencrypt/acme.json:rw
+      # while we allready enabled docker as backend,
+      # the socket must be exported to the container
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy
+
+  web:
+    build: .
+    container_name: 'nginx-traefiklands-rocks'
+    labels:
+      - "traefik.enable=true"
+      # here we define the domain(s)
+      - "traefik.http.routers.web.rule=Host(`traefiklands.rocks`) || Host(`www.traefiklands.rocks`)"
+      - "traefik.http.routers.web.middlewares=web-www-http-redirect"
+      - "traefik.http.middlewares.web-www-http-redirect.redirectregex.regex=^https://traefiklands.rocks/(.*)"
+      - "traefik.http.middlewares.web-www-http-redirect.redirectregex.replacement=https://www.traefiklands.rocks/$${1}"
+      # and the entrypoint
+      - "traefik.http.routers.web.entrypoints=https"
+      - "traefik.http.routers.web.tls=true"
+      - "traefik.http.routers.web.tls.certresolver=letsencrypt"      
+      - "traefik.http.services.web.loadbalancer.server.port=80"
+      # to be save we define the network here
+      - "traefik.docker.network=proxy"
+    networks:
+      - proxy
+
+# We route through the defined bridge (00_initial_setup)
+networks:
+  proxy:
+    external: true
