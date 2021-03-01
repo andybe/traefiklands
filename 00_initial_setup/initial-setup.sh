@@ -20,7 +20,7 @@ if [ "$DISTRO" == "Debian" ]; then
   elif [ "$OS_VERSION" == "10" ]; then
       sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
   elif [ "$OS_VERSION" == "11" ]; then
-      sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
+      sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian bullseye stable"
   else
       #default tested version
       sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
